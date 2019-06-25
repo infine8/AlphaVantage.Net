@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using System.Linq;
+using AlphaVantage.Net.Core;
 using AlphaVantage.Net.Stocks.BatchQuotes;
 using AlphaVantage.Net.Stocks.Parsing.Exceptions;
 using AlphaVantage.Net.Stocks.Parsing.JsonTokens;
@@ -133,28 +134,24 @@ namespace AlphaVantage.Net.Stocks.Parsing
             var dataPoint = isAdjusted ? new StockAdjustedDataPoint() : new StockDataPoint();
             
             dataPoint.Time = DateTime.Parse(dataPointContent[TimeStampKey]);
-            dataPoint.OpeningPrice = Decimal.Parse(dataPointContent[TimeSeriesJsonTokens.OpeningPriceToken]);
-            dataPoint.HighestPrice = Decimal.Parse(dataPointContent[TimeSeriesJsonTokens.HighestPriceToken]);
-            dataPoint.LowestPrice = Decimal.Parse(dataPointContent[TimeSeriesJsonTokens.LowestPriceToken]);
-            dataPoint.ClosingPrice = Decimal.Parse(dataPointContent[TimeSeriesJsonTokens.ClosingPriceToken]);
+            dataPoint.OpeningPrice = dataPointContent[TimeSeriesJsonTokens.OpeningPriceToken].ParseDecimal();
+            dataPoint.HighestPrice = dataPointContent[TimeSeriesJsonTokens.HighestPriceToken].ParseDecimal();
+            dataPoint.LowestPrice = dataPointContent[TimeSeriesJsonTokens.LowestPriceToken].ParseDecimal();
+            dataPoint.ClosingPrice = dataPointContent[TimeSeriesJsonTokens.ClosingPriceToken].ParseDecimal();
 
             if (isAdjusted)
             {
                 var adjustedPoint = dataPoint as StockAdjustedDataPoint;
-                adjustedPoint.Volume = 
-                    Int64.Parse(dataPointContent[TimeSeriesJsonTokens.VolumeAdjustedToken]);
-                adjustedPoint.AdjustedClosingPrice = 
-                    Decimal.Parse(dataPointContent[TimeSeriesJsonTokens.AdjustedClosingPriceToken]);
-                adjustedPoint.DividendAmount = 
-                    Decimal.Parse(dataPointContent[TimeSeriesJsonTokens.DividendAmountToken]);
+                adjustedPoint.Volume = dataPointContent[TimeSeriesJsonTokens.VolumeAdjustedToken].ParseLong();
+                adjustedPoint.AdjustedClosingPrice = dataPointContent[TimeSeriesJsonTokens.AdjustedClosingPriceToken].ParseDecimal();
+                adjustedPoint.DividendAmount = dataPointContent[TimeSeriesJsonTokens.DividendAmountToken].ParseDecimal();
                 
                 if(dataPointContent.ContainsKey(TimeSeriesJsonTokens.SplitCoefficientToken))
-                    adjustedPoint.SplitCoefficient = 
-                        Decimal.Parse(dataPointContent[TimeSeriesJsonTokens.SplitCoefficientToken]);
+                    adjustedPoint.SplitCoefficient = dataPointContent[TimeSeriesJsonTokens.SplitCoefficientToken].ParseDecimal();
             }
             else
             {
-                dataPoint.Volume = Int64.Parse(dataPointContent[TimeSeriesJsonTokens.VolumeNonAdjustedToken]);
+                dataPoint.Volume = dataPointContent[TimeSeriesJsonTokens.VolumeNonAdjustedToken].ParseLong();
             }
             
             return dataPoint;

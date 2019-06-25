@@ -10,7 +10,7 @@ namespace AlphaVantage.Net.Stocks.Tests
     public class AlphaVantageStocksClientTests
     {
         private const string Symbol = "AAPL";
-        private const string ApiKey = "1";
+        private const string ApiKey = "6VKK33LKH83MRJD8";
 
         public AlphaVantageStocksClientTests()
         {
