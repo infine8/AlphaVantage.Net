@@ -25,5 +25,12 @@ namespace AlphaVantage.Net.Core
 
             return val;
         }
+
+        public static TimeSpan ParseTimeSpan(this string str)
+        {
+            TimeSpan.TryParse(str, out var val);
+
+            return val;
+        }
     }
 }

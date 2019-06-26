@@ -151,5 +151,17 @@ namespace AlphaVantage.Net.Stocks.Tests
                 result.Any(r => r.Symbol == "FB") && 
                 result.Any(r => r.Symbol == "AAPL"));
         }
+
+        [Fact]
+        public async Task RequestSymbolSearchAsync_Test()
+        {
+            var client = new AlphaVantageStocksClient(ApiKey);
+
+            var result = await client.RequestSearchAsync("Micro");
+
+            Assert.NotNull(result);
+
+            Assert.True(result.Count > 0);
+        }
     }
 }

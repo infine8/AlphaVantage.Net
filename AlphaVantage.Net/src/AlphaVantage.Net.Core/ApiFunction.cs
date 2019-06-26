@@ -15,7 +15,7 @@ namespace AlphaVantage.Net.Core
         TIME_SERIES_MONTHLY,
         TIME_SERIES_MONTHLY_ADJUSTED,
         BATCH_STOCK_QUOTES,
-        
+
         // Foreign Exchange (FX)
         CURRENCY_EXCHANGE_RATE,
         
@@ -80,6 +80,8 @@ namespace AlphaVantage.Net.Core
         HT_PHASOR,
         
         // Sector Performances
-        SECTOR
+        SECTOR,
+
+        SYMBOL_SEARCH
     }
 }

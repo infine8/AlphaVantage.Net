@@ -4,6 +4,7 @@ using System.Threading.Tasks;
 using AlphaVantage.Net.Core;
 using AlphaVantage.Net.Stocks.BatchQuotes;
 using AlphaVantage.Net.Stocks.Parsing;
+using AlphaVantage.Net.Stocks.SearchSymbol;
 using AlphaVantage.Net.Stocks.TimeSeries;
 using AlphaVantage.Net.Stocks.Utils;
 using AlphaVantage.Net.Stocks.Validation;
@@ -74,7 +75,7 @@ namespace AlphaVantage.Net.Stocks
             
             return await RequestTimeSeriesAsync(function, query);
         }
-        
+
         public async Task<StockTimeSeries> RequestMonthlyTimeSeriesAsync(string symbol, bool adjusted = false)
         {
             var query = new Dictionary<string, string>()
@@ -104,14 +105,23 @@ namespace AlphaVantage.Net.Stocks
             return timeSeries;
         }
 
-        private async Task<StockTimeSeries> RequestTimeSeriesAsync(
-            ApiFunction function, 
-            Dictionary<string, string> query)
+        private async Task<StockTimeSeries> RequestTimeSeriesAsync(ApiFunction function, Dictionary<string, string> query)
         {
             var jObject = await _coreClient.RequestApiAsync(_apiKey, function, query);
             var timeSeries = _parser.ParseTimeSeries(jObject);
             
             return timeSeries;
         }
+
+
+        public async Task<ICollection<SearchMatch>> RequestSearchAsync(string keyword)
+        {
+            var jObject = await _coreClient.RequestApiAsync(_apiKey, ApiFunction.SYMBOL_SEARCH, new Dictionary<string, string> { { "keywords", keyword } });
+
+            var searchMatches = _parser.ParseSearchMatches(jObject);
+
+            return searchMatches;
+        }
+
     }
 }

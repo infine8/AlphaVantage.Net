@@ -132,8 +132,8 @@ namespace AlphaVantage.Net.Stocks.Parsing
             var isAdjusted = dataPointContent.Count > 6;
 
             var dataPoint = isAdjusted ? new StockAdjustedDataPoint() : new StockDataPoint();
-            
-            dataPoint.Time = DateTime.Parse(dataPointContent[TimeStampKey]);
+
+            dataPoint.Time = dataPointContent[TimeStampKey].ParseDateTime();
             dataPoint.OpeningPrice = dataPointContent[TimeSeriesJsonTokens.OpeningPriceToken].ParseDecimal();
             dataPoint.HighestPrice = dataPointContent[TimeSeriesJsonTokens.HighestPriceToken].ParseDecimal();
             dataPoint.LowestPrice = dataPointContent[TimeSeriesJsonTokens.LowestPriceToken].ParseDecimal();
