@@ -1,6 +1,6 @@
 ﻿namespace AlphaVantage.Net.Stocks.Parsing.JsonTokens
 {
-    internal static class SearchSymbolJsonTokens
+    internal static class SearchSymbolJsonToken
     {
         public const string SearchSymbolHeader = "bestMatches";
 

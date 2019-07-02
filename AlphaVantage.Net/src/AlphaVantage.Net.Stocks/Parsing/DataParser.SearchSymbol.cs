@@ -11,7 +11,7 @@ using Newtonsoft.Json.Linq;
 
 namespace AlphaVantage.Net.Stocks.Parsing
 {
-    internal partial class StockDataParser
+    internal partial class DataParser
     {
         public ICollection<SearchMatch> ParseSearchMatches(JObject jObject)
         {
@@ -20,8 +20,8 @@ namespace AlphaVantage.Net.Stocks.Parsing
             try
             {
                 var properties = jObject.Children().Select(ch => (JProperty)ch).ToArray();
-                var searchSymbolJson = properties.FirstOrDefault(p => p.Name == SearchSymbolJsonTokens.SearchSymbolHeader);
-                if (searchSymbolJson == null) throw new StocksParsingException("Unable to parse search symbol result.");
+                var searchSymbolJson = properties.FirstOrDefault(p => p.Name == SearchSymbolJsonToken.SearchSymbolHeader);
+                if (searchSymbolJson == null) throw new TimeSeriesParsingException("Unable to parse search symbol result.");
 
                 var result = new List<SearchMatch>();
                 var contentDict = new Dictionary<string, string>();
@@ -41,13 +41,13 @@ namespace AlphaVantage.Net.Stocks.Parsing
 
                 return result;
             }
-            catch (StocksParsingException)
+            catch (TimeSeriesParsingException)
             {
                 throw;
             }
             catch (Exception ex)
             {
-                throw new StocksParsingException("Unable to parse data. See the inner exception for details", ex);
+                throw new TimeSeriesParsingException("Unable to parse data. See the inner exception for details", ex);
             }
         }
 
@@ -55,15 +55,15 @@ namespace AlphaVantage.Net.Stocks.Parsing
         {
             var result = new SearchMatch
             {
-                Symbol = searchContent[SearchSymbolJsonTokens.Symbol],
-                Name = searchContent[SearchSymbolJsonTokens.Name],
-                Type = searchContent[SearchSymbolJsonTokens.Type],
-                Region = searchContent[SearchSymbolJsonTokens.Region],
-                MarketOpenTime = searchContent[SearchSymbolJsonTokens.MarketOpenTime].ParseTimeSpan(),
-                MarketCloseTime = searchContent[SearchSymbolJsonTokens.MarketCloseTime].ParseTimeSpan(),
-                Timezone = searchContent[SearchSymbolJsonTokens.Timezone],
-                Currency = searchContent[SearchSymbolJsonTokens.Currency],
-                MatchScore = searchContent[SearchSymbolJsonTokens.MatchScore].ParseDecimal(),
+                Symbol = searchContent[SearchSymbolJsonToken.Symbol],
+                Name = searchContent[SearchSymbolJsonToken.Name],
+                Type = searchContent[SearchSymbolJsonToken.Type],
+                Region = searchContent[SearchSymbolJsonToken.Region],
+                MarketOpenTime = searchContent[SearchSymbolJsonToken.MarketOpenTime].ParseTimeSpan(),
+                MarketCloseTime = searchContent[SearchSymbolJsonToken.MarketCloseTime].ParseTimeSpan(),
+                Timezone = searchContent[SearchSymbolJsonToken.Timezone],
+                Currency = searchContent[SearchSymbolJsonToken.Currency],
+                MatchScore = searchContent[SearchSymbolJsonToken.MatchScore].ParseDecimal(),
             };
 
             return result;

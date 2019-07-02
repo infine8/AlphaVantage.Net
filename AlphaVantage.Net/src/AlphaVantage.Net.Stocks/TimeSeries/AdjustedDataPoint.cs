@@ -5,7 +5,7 @@ namespace AlphaVantage.Net.Stocks.TimeSeries
     /// <summary>
     /// Represent single adjusted element of time series
     /// </summary>
-    public sealed class StockAdjustedDataPoint : StockDataPoint
+    public sealed class AdjustedDataPoint : DataPoint
     {
         public decimal AdjustedClosingPrice {get; set;}
         

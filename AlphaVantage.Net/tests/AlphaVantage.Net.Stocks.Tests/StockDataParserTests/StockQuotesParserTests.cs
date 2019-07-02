@@ -16,7 +16,7 @@ namespace AlphaVantage.Net.Stocks.Tests.StockDataParserTests
             var json = File.ReadAllText("Data/stock-quotes.json");
             var jObject = (JObject) JsonConvert.DeserializeObject(json);
 
-            var parser = new StockDataParser();
+            var parser = new DataParser();
             var result = parser.ParseStockQuotes(jObject);
             
             Assert.NotNull(result);

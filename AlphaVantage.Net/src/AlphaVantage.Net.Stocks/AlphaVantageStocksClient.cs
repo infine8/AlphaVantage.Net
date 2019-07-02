@@ -18,7 +18,7 @@ namespace AlphaVantage.Net.Stocks
     {
         private readonly string _apiKey;
         private readonly AlphaVantageCoreClient _coreClient;
-        private readonly StockDataParser _parser;
+        private readonly DataParser _parser;
         
         public AlphaVantageStocksClient(string apiKey)
         {
@@ -26,10 +26,10 @@ namespace AlphaVantage.Net.Stocks
             
             _apiKey = apiKey;
             _coreClient = new AlphaVantageCoreClient();
-            _parser = new StockDataParser();
+            _parser = new DataParser();
         }
 
-        public async Task<StockTimeSeries> RequestIntradayTimeSeriesAsync(
+        public async Task<TimeSeriesData> RequestStockIntradayTimeSeriesAsync(
             string symbol, 
             IntradayInterval interval = IntradayInterval.SixtyMin, 
             TimeSeriesSize size = TimeSeriesSize.Compact)
@@ -41,10 +41,10 @@ namespace AlphaVantage.Net.Stocks
                 {StockApiQueryVars.OutputSize, size.ConvertToString()}
             };
             
-            return await RequestTimeSeriesAsync(ApiFunction.TIME_SERIES_INTRADAY, query);
+            return await RequestTimeSeriesDataAsync(ApiFunction.TIME_SERIES_INTRADAY, query);
         }
 
-        public async Task<StockTimeSeries> RequestDailyTimeSeriesAsync(
+        public async Task<TimeSeriesData> RequestStockDailyTimeSeriesAsync(
             string symbol, 
             TimeSeriesSize size = TimeSeriesSize.Compact, 
             bool adjusted = false)
@@ -59,10 +59,10 @@ namespace AlphaVantage.Net.Stocks
                 ApiFunction.TIME_SERIES_DAILY_ADJUSTED : 
                 ApiFunction.TIME_SERIES_DAILY;
             
-            return await RequestTimeSeriesAsync(function, query);
+            return await RequestTimeSeriesDataAsync(function, query);
         }
         
-        public async Task<StockTimeSeries> RequestWeeklyTimeSeriesAsync(string symbol, bool adjusted = false)
+        public async Task<TimeSeriesData> RequestStockWeeklyTimeSeriesAsync(string symbol, bool adjusted = false)
         {
             var query = new Dictionary<string, string>()
             {
@@ -73,10 +73,10 @@ namespace AlphaVantage.Net.Stocks
                 ApiFunction.TIME_SERIES_WEEKLY_ADJUSTED : 
                 ApiFunction.TIME_SERIES_WEEKLY;
             
-            return await RequestTimeSeriesAsync(function, query);
+            return await RequestTimeSeriesDataAsync(function, query);
         }
 
-        public async Task<StockTimeSeries> RequestMonthlyTimeSeriesAsync(string symbol, bool adjusted = false)
+        public async Task<TimeSeriesData> RequestStockMonthlyTimeSeriesAsync(string symbol, bool adjusted = false)
         {
             var query = new Dictionary<string, string>()
             {
@@ -87,7 +87,7 @@ namespace AlphaVantage.Net.Stocks
                 ApiFunction.TIME_SERIES_MONTHLY_ADJUSTED : 
                 ApiFunction.TIME_SERIES_MONTHLY;
 
-            return await RequestTimeSeriesAsync(function, query);
+            return await RequestTimeSeriesDataAsync(function, query);
         }
 
         public async Task<ICollection<StockQuote>> RequestBatchQuotesAsync(string[] symbols)
@@ -105,10 +105,10 @@ namespace AlphaVantage.Net.Stocks
             return timeSeries;
         }
 
-        private async Task<StockTimeSeries> RequestTimeSeriesAsync(ApiFunction function, Dictionary<string, string> query)
+        private async Task<TimeSeriesData> RequestTimeSeriesDataAsync(ApiFunction function, Dictionary<string, string> query)
         {
             var jObject = await _coreClient.RequestApiAsync(_apiKey, function, query);
-            var timeSeries = _parser.ParseTimeSeries(jObject);
+            var timeSeries = _parser.ParseStockTimeSeries(jObject);
             
             return timeSeries;
         }
@@ -116,11 +116,28 @@ namespace AlphaVantage.Net.Stocks
 
         public async Task<ICollection<SearchMatch>> RequestSearchAsync(string keyword)
         {
+            keyword = keyword?.Trim();
+
+            if (string.IsNullOrEmpty(keyword)) return null;
+
             var jObject = await _coreClient.RequestApiAsync(_apiKey, ApiFunction.SYMBOL_SEARCH, new Dictionary<string, string> { { "keywords", keyword } });
 
             var searchMatches = _parser.ParseSearchMatches(jObject);
 
             return searchMatches;
+        }
+
+        public async Task<TimeSeriesData> RequestCryptoDailyTimeSeriesAsync(string symbol, string market = "USD")
+        {
+            symbol = symbol?.Trim().ToUpper();
+            market = market?.Trim().ToUpper();
+
+            if (string.IsNullOrEmpty(symbol) || string.IsNullOrEmpty(market)) return null;
+
+            var jObject = await _coreClient.RequestApiAsync(_apiKey, ApiFunction.DIGITAL_CURRENCY_DAILY, new Dictionary<string, string> { { "symbol", symbol }, { "market", market } });
+            var timeSeries = _parser.ParseCryptoTimeSeries(jObject);
+
+            return timeSeries;
         }
 
     }

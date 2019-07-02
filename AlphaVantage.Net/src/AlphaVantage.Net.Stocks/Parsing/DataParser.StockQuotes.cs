@@ -9,7 +9,7 @@ using Newtonsoft.Json.Linq;
 
 namespace AlphaVantage.Net.Stocks.Parsing
 {
-    internal partial class StockDataParser
+    internal partial class DataParser
     {
         public ICollection<StockQuote> ParseStockQuotes(JObject jObject)
         {
@@ -18,9 +18,9 @@ namespace AlphaVantage.Net.Stocks.Parsing
             try
             {
                 var properties = jObject.Children().Select(ch => (JProperty)ch).ToArray();
-                var stockQuotesJson = properties.FirstOrDefault(p => p.Name == StockQuoteJsonTokens.StockQuotesHeader);
+                var stockQuotesJson = properties.FirstOrDefault(p => p.Name == StockQuoteJsonToken.StockQuotesHeader);
                 if (stockQuotesJson == null)
-                    throw new StocksParsingException("Unable to parse stock quotes");
+                    throw new TimeSeriesParsingException("Unable to parse stock quotes");
 
                 var result = new List<StockQuote>();
                 var contentDict = new Dictionary<string, string>();
@@ -40,13 +40,13 @@ namespace AlphaVantage.Net.Stocks.Parsing
 
                 return result;
             }
-            catch (StocksParsingException)
+            catch (TimeSeriesParsingException)
             {
                 throw;
             }
             catch (Exception ex)
             {
-                throw new StocksParsingException("Unable to parse data. See the inner exception for details", ex);
+                throw new TimeSeriesParsingException("Unable to parse data. See the inner exception for details", ex);
             }
         }
 
@@ -54,10 +54,10 @@ namespace AlphaVantage.Net.Stocks.Parsing
         {
             var result = new StockQuote()
             {
-                Symbol = stockQuoteContent[StockQuoteJsonTokens.SymbolToken],
-                Time = stockQuoteContent[StockQuoteJsonTokens.TimestampToken].ParseDateTime(),
-                Price = stockQuoteContent[StockQuoteJsonTokens.PriceToken].ParseDecimal(),
-                Volume = stockQuoteContent[StockQuoteJsonTokens.VolumeToken].ParseLong()
+                Symbol = stockQuoteContent[StockQuoteJsonToken.SymbolToken],
+                Time = stockQuoteContent[StockQuoteJsonToken.TimestampToken].ParseDateTime(),
+                Price = stockQuoteContent[StockQuoteJsonToken.PriceToken].ParseDecimal(),
+                Volume = stockQuoteContent[StockQuoteJsonToken.VolumeToken].ParseLong()
             };
 
             return result;

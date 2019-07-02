@@ -1,6 +1,6 @@
 ﻿namespace AlphaVantage.Net.Stocks.Parsing.JsonTokens
 {
-    internal static class MetaDataJsonTokens
+    internal static class StockMetaDataJsonToken
     {
         public const string MetaDataHeader = "Meta Data";
 

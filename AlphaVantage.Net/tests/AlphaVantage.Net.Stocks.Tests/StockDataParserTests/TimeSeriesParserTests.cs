@@ -16,8 +16,8 @@ namespace AlphaVantage.Net.Stocks.Tests.StockDataParserTests
             var json = File.ReadAllText("Data/intraday.json");
             var jObject = (JObject) JsonConvert.DeserializeObject(json);
 
-            var parser = new StockDataParser();
-            var result = parser.ParseTimeSeries(jObject);
+            var parser = new DataParser();
+            var result = parser.ParseStockTimeSeries(jObject);
             
             Assert.NotNull(result);
             Assert.Equal(TimeSeriesType.Intraday, result.Type);
@@ -25,8 +25,8 @@ namespace AlphaVantage.Net.Stocks.Tests.StockDataParserTests
             Assert.Equal(3, result.DataPoints.Count);
             foreach (var resultDataPoint in result.DataPoints)
             {
-                Assert.IsType(typeof(StockDataPoint), resultDataPoint);
-                Assert.IsNotType(typeof(StockAdjustedDataPoint), resultDataPoint);
+                Assert.IsType(typeof(DataPoint), resultDataPoint);
+                Assert.IsNotType(typeof(AdjustedDataPoint), resultDataPoint);
             }
         }
         
@@ -36,8 +36,8 @@ namespace AlphaVantage.Net.Stocks.Tests.StockDataParserTests
             var json = File.ReadAllText("Data/daily-not-adjusted.json");
             var jObject = (JObject) JsonConvert.DeserializeObject(json);
 
-            var parser = new StockDataParser();
-            var result = parser.ParseTimeSeries(jObject);
+            var parser = new DataParser();
+            var result = parser.ParseStockTimeSeries(jObject);
             
             Assert.NotNull(result);
             Assert.Equal(TimeSeriesType.Daily, result.Type);
@@ -45,8 +45,8 @@ namespace AlphaVantage.Net.Stocks.Tests.StockDataParserTests
             Assert.Equal(3, result.DataPoints.Count);
             foreach (var resultDataPoint in result.DataPoints)
             {
-                Assert.IsType(typeof(StockDataPoint), resultDataPoint);
-                Assert.IsNotType(typeof(StockAdjustedDataPoint), resultDataPoint);
+                Assert.IsType(typeof(DataPoint), resultDataPoint);
+                Assert.IsNotType(typeof(AdjustedDataPoint), resultDataPoint);
             }
         }
         
@@ -56,8 +56,8 @@ namespace AlphaVantage.Net.Stocks.Tests.StockDataParserTests
             var json = File.ReadAllText("Data/daily-adjusted.json");
             var jObject = (JObject) JsonConvert.DeserializeObject(json);
 
-            var parser = new StockDataParser();
-            var result = parser.ParseTimeSeries(jObject);
+            var parser = new DataParser();
+            var result = parser.ParseStockTimeSeries(jObject);
             
             Assert.NotNull(result);
             Assert.Equal(TimeSeriesType.Daily, result.Type);
@@ -65,8 +65,8 @@ namespace AlphaVantage.Net.Stocks.Tests.StockDataParserTests
             Assert.Equal(3, result.DataPoints.Count);
             foreach (var resultDataPoint in result.DataPoints)
             {
-                Assert.IsType(typeof(StockAdjustedDataPoint), resultDataPoint);
-                Assert.NotNull((resultDataPoint as StockAdjustedDataPoint)?.SplitCoefficient);
+                Assert.IsType(typeof(AdjustedDataPoint), resultDataPoint);
+                Assert.NotNull((resultDataPoint as AdjustedDataPoint)?.SplitCoefficient);
             }
         }
         
@@ -76,8 +76,8 @@ namespace AlphaVantage.Net.Stocks.Tests.StockDataParserTests
             var json = File.ReadAllText("Data/weekly-not-adjusted.json");
             var jObject = (JObject) JsonConvert.DeserializeObject(json);
 
-            var parser = new StockDataParser();
-            var result = parser.ParseTimeSeries(jObject);
+            var parser = new DataParser();
+            var result = parser.ParseStockTimeSeries(jObject);
             
             Assert.NotNull(result);
             Assert.Equal(TimeSeriesType.Weekly, result.Type);
@@ -85,8 +85,8 @@ namespace AlphaVantage.Net.Stocks.Tests.StockDataParserTests
             Assert.Equal(3, result.DataPoints.Count);
             foreach (var resultDataPoint in result.DataPoints)
             {
-                Assert.IsType(typeof(StockDataPoint), resultDataPoint);
-                Assert.IsNotType(typeof(StockAdjustedDataPoint), resultDataPoint);
+                Assert.IsType(typeof(DataPoint), resultDataPoint);
+                Assert.IsNotType(typeof(AdjustedDataPoint), resultDataPoint);
             }
         }
         
@@ -96,8 +96,8 @@ namespace AlphaVantage.Net.Stocks.Tests.StockDataParserTests
             var json = File.ReadAllText("Data/weekly-adjusted.json");
             var jObject = (JObject) JsonConvert.DeserializeObject(json);
 
-            var parser = new StockDataParser();
-            var result = parser.ParseTimeSeries(jObject);
+            var parser = new DataParser();
+            var result = parser.ParseStockTimeSeries(jObject);
             
             Assert.NotNull(result);
             Assert.Equal(TimeSeriesType.Weekly, result.Type);
@@ -105,7 +105,7 @@ namespace AlphaVantage.Net.Stocks.Tests.StockDataParserTests
             Assert.Equal(3, result.DataPoints.Count);
             foreach (var resultDataPoint in result.DataPoints)
             {
-                Assert.IsType(typeof(StockAdjustedDataPoint), resultDataPoint);
+                Assert.IsType(typeof(AdjustedDataPoint), resultDataPoint);
             }
         }
         
@@ -115,8 +115,8 @@ namespace AlphaVantage.Net.Stocks.Tests.StockDataParserTests
             var json = File.ReadAllText("Data/monthly-not-adjusted.json");
             var jObject = (JObject) JsonConvert.DeserializeObject(json);
 
-            var parser = new StockDataParser();
-            var result = parser.ParseTimeSeries(jObject);
+            var parser = new DataParser();
+            var result = parser.ParseStockTimeSeries(jObject);
             
             Assert.NotNull(result);
             Assert.Equal(TimeSeriesType.Monthly, result.Type);
@@ -124,8 +124,8 @@ namespace AlphaVantage.Net.Stocks.Tests.StockDataParserTests
             Assert.Equal(3, result.DataPoints.Count);
             foreach (var resultDataPoint in result.DataPoints)
             {
-                Assert.IsType(typeof(StockDataPoint), resultDataPoint);
-                Assert.IsNotType(typeof(StockAdjustedDataPoint), resultDataPoint);
+                Assert.IsType(typeof(DataPoint), resultDataPoint);
+                Assert.IsNotType(typeof(AdjustedDataPoint), resultDataPoint);
             }
         }
         
@@ -135,8 +135,8 @@ namespace AlphaVantage.Net.Stocks.Tests.StockDataParserTests
             var json = File.ReadAllText("Data/monthly-adjusted.json");
             var jObject = (JObject) JsonConvert.DeserializeObject(json);
 
-            var parser = new StockDataParser();
-            var result = parser.ParseTimeSeries(jObject);
+            var parser = new DataParser();
+            var result = parser.ParseStockTimeSeries(jObject);
             
             Assert.NotNull(result);
             Assert.Equal(TimeSeriesType.Monthly, result.Type);
@@ -144,7 +144,7 @@ namespace AlphaVantage.Net.Stocks.Tests.StockDataParserTests
             Assert.Equal(3, result.DataPoints.Count);
             foreach (var resultDataPoint in result.DataPoints)
             {
-                Assert.IsType(typeof(StockAdjustedDataPoint), resultDataPoint);
+                Assert.IsType(typeof(AdjustedDataPoint), resultDataPoint);
             }
         }
         
@@ -154,8 +154,8 @@ namespace AlphaVantage.Net.Stocks.Tests.StockDataParserTests
             var json = File.ReadAllText("Data/bad-data.json");
             var jObject = (JObject) JsonConvert.DeserializeObject(json);
 
-            var parser = new StockDataParser();
-            Assert.Throws(typeof(StocksParsingException), () => parser.ParseTimeSeries(jObject));
+            var parser = new DataParser();
+            Assert.Throws(typeof(TimeSeriesParsingException), () => parser.ParseStockTimeSeries(jObject));
         }
     }
 }

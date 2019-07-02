@@ -23,15 +23,15 @@ namespace AlphaVantage.Net.Stocks.Tests
             var client = new AlphaVantageStocksClient(ApiKey);
 
             var result =
-                await client.RequestIntradayTimeSeriesAsync(Symbol, IntradayInterval.OneMin, TimeSeriesSize.Compact);
+                await client.RequestStockIntradayTimeSeriesAsync(Symbol, IntradayInterval.OneMin, TimeSeriesSize.Compact);
             
             Assert.NotNull(result);
             Assert.Equal(TimeSeriesType.Intraday, result.Type);
             Assert.Equal(Symbol, result.Symbol);
             Assert.NotNull(result.DataPoints);
             Assert.True(result.DataPoints.All(p => 
-                p.GetType() == typeof(StockDataPoint) &&
-                p.GetType() != typeof(StockAdjustedDataPoint)));
+                p.GetType() == typeof(DataPoint) &&
+                p.GetType() != typeof(AdjustedDataPoint)));
         }
         
         [Fact]
@@ -40,7 +40,7 @@ namespace AlphaVantage.Net.Stocks.Tests
             var client = new AlphaVantageStocksClient(ApiKey);
 
             var result =
-                await client.RequestDailyTimeSeriesAsync(Symbol, TimeSeriesSize.Compact, adjusted: false);
+                await client.RequestStockDailyTimeSeriesAsync(Symbol, TimeSeriesSize.Compact, adjusted: false);
             
             Assert.NotNull(result);
             Assert.Equal(TimeSeriesType.Daily, result.Type);
@@ -48,8 +48,8 @@ namespace AlphaVantage.Net.Stocks.Tests
             Assert.False(result.IsAdjusted);
             Assert.NotNull(result.DataPoints);
             Assert.True(result.DataPoints.All(p => 
-                p.GetType() == typeof(StockDataPoint) &&
-                p.GetType() != typeof(StockAdjustedDataPoint)));
+                p.GetType() == typeof(DataPoint) &&
+                p.GetType() != typeof(AdjustedDataPoint)));
         }
         
         [Fact]
@@ -58,14 +58,14 @@ namespace AlphaVantage.Net.Stocks.Tests
             var client = new AlphaVantageStocksClient(ApiKey);
 
             var result =
-                await client.RequestDailyTimeSeriesAsync(Symbol, TimeSeriesSize.Compact, adjusted: true);
+                await client.RequestStockDailyTimeSeriesAsync(Symbol, TimeSeriesSize.Compact, adjusted: true);
             
             Assert.NotNull(result);
             Assert.Equal(TimeSeriesType.Daily, result.Type);
             Assert.Equal(Symbol, result.Symbol);
             Assert.True(result.IsAdjusted);
             Assert.NotNull(result.DataPoints);
-            Assert.True(result.DataPoints.All(p => p is StockAdjustedDataPoint));
+            Assert.True(result.DataPoints.All(p => p is AdjustedDataPoint));
         }
         
         [Fact]
@@ -74,7 +74,7 @@ namespace AlphaVantage.Net.Stocks.Tests
             var client = new AlphaVantageStocksClient(ApiKey);
 
             var result =
-                await client.RequestWeeklyTimeSeriesAsync(Symbol, adjusted: false);
+                await client.RequestStockWeeklyTimeSeriesAsync(Symbol, adjusted: false);
             
             Assert.NotNull(result);
             Assert.Equal(TimeSeriesType.Weekly, result.Type);
@@ -82,8 +82,8 @@ namespace AlphaVantage.Net.Stocks.Tests
             Assert.False(result.IsAdjusted);
             Assert.NotNull(result.DataPoints);
             Assert.True(result.DataPoints.All(p => 
-                p.GetType() == typeof(StockDataPoint) &&
-                p.GetType() != typeof(StockAdjustedDataPoint)));
+                p.GetType() == typeof(DataPoint) &&
+                p.GetType() != typeof(AdjustedDataPoint)));
         }
         
         [Fact]
@@ -92,14 +92,14 @@ namespace AlphaVantage.Net.Stocks.Tests
             var client = new AlphaVantageStocksClient(ApiKey);
 
             var result =
-                await client.RequestWeeklyTimeSeriesAsync(Symbol, adjusted: true);
+                await client.RequestStockWeeklyTimeSeriesAsync(Symbol, adjusted: true);
             
             Assert.NotNull(result);
             Assert.Equal(TimeSeriesType.Weekly, result.Type);
             Assert.Equal(Symbol, result.Symbol);
             Assert.True(result.IsAdjusted);
             Assert.NotNull(result.DataPoints);
-            Assert.True(result.DataPoints.All(p => p is StockAdjustedDataPoint));
+            Assert.True(result.DataPoints.All(p => p is AdjustedDataPoint));
         }
         
         [Fact]
@@ -108,7 +108,7 @@ namespace AlphaVantage.Net.Stocks.Tests
             var client = new AlphaVantageStocksClient(ApiKey);
 
             var result =
-                await client.RequestMonthlyTimeSeriesAsync(Symbol, adjusted: false);
+                await client.RequestStockMonthlyTimeSeriesAsync(Symbol, adjusted: false);
             
             Assert.NotNull(result);
             Assert.Equal(TimeSeriesType.Monthly, result.Type);
@@ -116,8 +116,8 @@ namespace AlphaVantage.Net.Stocks.Tests
             Assert.False(result.IsAdjusted);
             Assert.NotNull(result.DataPoints);
             Assert.True(result.DataPoints.All(p => 
-                p.GetType() == typeof(StockDataPoint) &&
-                p.GetType() != typeof(StockAdjustedDataPoint)));
+                p.GetType() == typeof(DataPoint) &&
+                p.GetType() != typeof(AdjustedDataPoint)));
         }
         
         [Fact]
@@ -126,14 +126,14 @@ namespace AlphaVantage.Net.Stocks.Tests
             var client = new AlphaVantageStocksClient(ApiKey);
 
             var result =
-                await client.RequestMonthlyTimeSeriesAsync(Symbol, adjusted: true);
+                await client.RequestStockMonthlyTimeSeriesAsync(Symbol, adjusted: true);
             
             Assert.NotNull(result);
             Assert.Equal(TimeSeriesType.Monthly, result.Type);
             Assert.Equal(Symbol, result.Symbol);
             Assert.True(result.IsAdjusted);
             Assert.NotNull(result.DataPoints);
-            Assert.True(result.DataPoints.All(p => p is StockAdjustedDataPoint));
+            Assert.True(result.DataPoints.All(p => p is AdjustedDataPoint));
         }
         
         [Fact]
@@ -162,6 +162,18 @@ namespace AlphaVantage.Net.Stocks.Tests
             Assert.NotNull(result);
 
             Assert.True(result.Count > 0);
+        }
+
+        [Fact]
+        public async Task RequestCryptoDailyTimeSeriesAsync_Test()
+        {
+            var client = new AlphaVantageStocksClient(ApiKey);
+
+            var result = await client.RequestCryptoDailyTimeSeriesAsync("BTC");
+
+            Assert.NotNull(result);
+
+            Assert.True(result.DataPoints.Count > 0);
         }
     }
 }

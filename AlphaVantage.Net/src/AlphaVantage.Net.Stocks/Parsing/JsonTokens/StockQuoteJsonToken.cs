@@ -1,6 +1,6 @@
 ﻿namespace AlphaVantage.Net.Stocks.Parsing.JsonTokens
 {
-    internal static class StockQuoteJsonTokens
+    internal static class StockQuoteJsonToken
     {
         public const string StockQuotesHeader = "Stock Quotes";
 
