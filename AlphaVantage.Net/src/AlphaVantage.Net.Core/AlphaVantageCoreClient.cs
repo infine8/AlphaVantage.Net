@@ -17,15 +17,15 @@ namespace AlphaVantage.Net.Core
     {
         [CanBeNull]
         private readonly IApiCallValidator _apiCallValidator;
-        
+
         [CanBeNull]
         private readonly TimeSpan? _timeout;
 
-        private static IHttpClient _client = new HttpClientWithRateLimit(new HttpClient(), 20, 10);
 
         public AlphaVantageCoreClient(IApiCallValidator apiCallValidator = null, TimeSpan? timeout = null)
         {
             _apiCallValidator = apiCallValidator;
+
             _timeout = timeout;
         }
 
@@ -33,18 +33,20 @@ namespace AlphaVantage.Net.Core
         {
             AssertValid(function, query);
 
-            if (_timeout.HasValue)
-                _client.SetTimeOut(_timeout.Value);
-            
-            var request = ComposeHttpRequest(apiKey, function, query);
-            var response = await _client.SendAsync(request);
+            using (var client = new HttpClientWithRateLimit(new HttpClient(), 20, 10))
+            {
+                if (_timeout.HasValue) client.SetTimeOut(_timeout.Value);
 
-            var jsonString = await response.Content.ReadAsStringAsync();
-            var jObject = (JObject)JsonConvert.DeserializeObject(jsonString);
-            
-            AssertNotBadRequest(jObject);
-            
-            return jObject;
+                var request = ComposeHttpRequest(apiKey, function, query);
+                var response = await client.SendAsync(request);
+
+                var jsonString = await response.Content.ReadAsStringAsync();
+                var jObject = (JObject)JsonConvert.DeserializeObject(jsonString);
+
+                AssertNotBadRequest(jObject);
+
+                return jObject;
+            }
         }
 
         private HttpRequestMessage ComposeHttpRequest(string apiKey, ApiFunction function, IDictionary<string, string> query)

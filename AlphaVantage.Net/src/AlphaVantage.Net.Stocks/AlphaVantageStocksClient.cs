@@ -20,12 +20,12 @@ namespace AlphaVantage.Net.Stocks
         private readonly AlphaVantageCoreClient _coreClient;
         private readonly DataParser _parser;
         
-        public AlphaVantageStocksClient(string apiKey)
+        public AlphaVantageStocksClient(string apiKey, TimeSpan? requestTimeout = null)
         {
             if(string.IsNullOrWhiteSpace(apiKey)) throw new ArgumentNullException(nameof(apiKey));
             
             _apiKey = apiKey;
-            _coreClient = new AlphaVantageCoreClient();
+            _coreClient = new AlphaVantageCoreClient(timeout: requestTimeout);
             _parser = new DataParser();
         }
 
