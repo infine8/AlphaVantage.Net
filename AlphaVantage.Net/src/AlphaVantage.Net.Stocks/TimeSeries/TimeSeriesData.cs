@@ -7,7 +7,7 @@ namespace AlphaVantage.Net.Stocks.TimeSeries
     {
         public TimeSeriesType Type { get; set; }
 
-        public DateTime LastRefreshed { get; set; }
+        public DateTime LastRefreshedUtc { get; set; }
 
         public string Symbol { get; set; }
 

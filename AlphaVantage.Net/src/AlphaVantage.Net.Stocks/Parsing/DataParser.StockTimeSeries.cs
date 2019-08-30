@@ -29,7 +29,7 @@ namespace AlphaVantage.Net.Stocks.Parsing
                     properties.FirstOrDefault(p => p.Name.Contains(StockTimeSeriesJsonToken.TimeSeriesHeader));
 
                 if (metadataJson == null || timeSeriesJson == null)
-                    throw new TimeSeriesParsingException("Unable to parse time-series json");
+                    throw new TimeSeriesParsingException($"Unable to parse time-series json. Response: {jObject}");
 
                 var result = new TimeSeriesData();
 
@@ -66,11 +66,15 @@ namespace AlphaVantage.Net.Stocks.Parsing
                 else if(metadataItemName.Contains(StockMetaDataJsonToken.RefreshTimeToken))
                 {
                     var refreshTime = metadataItemValue.ParseDateTime();
-                    timeSeriesData.LastRefreshed = DateTime.SpecifyKind(refreshTime, DateTimeKind.Local);
+                    timeSeriesData.LastRefreshedUtc = DateTime.SpecifyKind(refreshTime, DateTimeKind.Local);
                 }
                 else if (metadataItemName.Contains(StockMetaDataJsonToken.SymbolToken))
                 {
                     timeSeriesData.Symbol = metadataItemValue;
+                }
+                else if (metadataItemName.Contains(StockMetaDataJsonToken.TimezoneToken))
+                {
+                    timeSeriesData.LastRefreshedUtc = timeSeriesData.LastRefreshedUtc.ConvetToUtc(metadataItemValue);
                 }
             }
         }
@@ -149,7 +153,7 @@ namespace AlphaVantage.Net.Stocks.Parsing
                 if(dataPointContent.ContainsKey(StockTimeSeriesJsonToken.SplitCoefficientToken))
                     adjustedPoint.SplitCoefficient = dataPointContent[StockTimeSeriesJsonToken.SplitCoefficientToken].ParseDecimal();
             }
-            else
+            else if (dataPointContent.ContainsKey(StockTimeSeriesJsonToken.VolumeNonAdjustedToken))
             {
                 dataPoint.Volume = dataPointContent[StockTimeSeriesJsonToken.VolumeNonAdjustedToken].ParseDecimal();
             }

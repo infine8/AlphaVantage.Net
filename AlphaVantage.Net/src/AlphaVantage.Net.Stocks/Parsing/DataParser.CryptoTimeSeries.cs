@@ -26,7 +26,7 @@ namespace AlphaVantage.Net.Stocks.Parsing
                     properties.FirstOrDefault(p => p.Name.Contains(StockTimeSeriesJsonToken.TimeSeriesHeader));
 
                 if (metadataJson == null || timeSeriesJson == null)
-                    throw new TimeSeriesParsingException("Unable to parse time-series json");
+                    throw new TimeSeriesParsingException($"Unable to parse time-series json. Response: {jObject}");
 
                 var result = new TimeSeriesData();
 
@@ -64,7 +64,7 @@ namespace AlphaVantage.Net.Stocks.Parsing
                 else if (metadataItemName.Contains(CryptoMetaDataJsonToken.RefreshTimeToken))
                 {
                     var refreshTime = metadataItemValue.Replace("(end of day)", string.Empty).Trim().ParseDateTime();
-                    timeSeriesData.LastRefreshed = DateTime.SpecifyKind(refreshTime, DateTimeKind.Local);
+                    timeSeriesData.LastRefreshedUtc = DateTime.SpecifyKind(refreshTime, DateTimeKind.Local);
                 }
                 else if (metadataItemName.Contains(CryptoMetaDataJsonToken.SymbolToken))
                 {

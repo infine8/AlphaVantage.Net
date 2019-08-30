@@ -140,5 +140,16 @@ namespace AlphaVantage.Net.Stocks
             return timeSeries;
         }
 
+        public async Task<TimeSeriesData> RequestFxDailyTimeSeriesAsync(string symbolFrom, string symbolTo, TimeSeriesSize size = TimeSeriesSize.Compact)
+        {
+            symbolFrom = symbolFrom?.Trim().ToUpper();
+            symbolTo = symbolTo?.Trim().ToUpper();
+
+            var jObject = await _coreClient.RequestApiAsync(_apiKey, ApiFunction.FX_DAILY, new Dictionary<string, string> { { "from_symbol", symbolFrom }, { "to_symbol", symbolTo }, { "outputsize", size.ToString().ToLowerInvariant() } });
+            var timeSeries = _parser.ParseFxTimeSeries(jObject);
+
+            return timeSeries;
+        }
+
     }
 }

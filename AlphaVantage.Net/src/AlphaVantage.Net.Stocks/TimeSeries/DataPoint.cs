@@ -17,7 +17,7 @@ namespace AlphaVantage.Net.Stocks.TimeSeries
 
         public decimal LowestPrice { get; set; }
 
-        public decimal Volume { get; set; }
+        public decimal? Volume { get; set; }
 
         public decimal? MarketCapUsd { get; set; }
     }

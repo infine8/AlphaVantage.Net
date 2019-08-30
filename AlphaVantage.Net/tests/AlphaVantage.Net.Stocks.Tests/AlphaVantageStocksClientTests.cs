@@ -10,7 +10,7 @@ namespace AlphaVantage.Net.Stocks.Tests
     public class AlphaVantageStocksClientTests
     {
         private const string Symbol = "AAPL";
-        private const string ApiKey = "6VKK33LKH83MRJD8";
+        private const string ApiKey = "MSFSF1JFG104HAPL";
 
         public AlphaVantageStocksClientTests()
         {
@@ -157,7 +157,7 @@ namespace AlphaVantage.Net.Stocks.Tests
         {
             var client = new AlphaVantageStocksClient(ApiKey);
 
-            var result = await client.RequestSearchAsync("Micro");
+            var result = await client.RequestSearchAsync("RJZ");
 
             Assert.NotNull(result);
 
@@ -170,6 +170,18 @@ namespace AlphaVantage.Net.Stocks.Tests
             var client = new AlphaVantageStocksClient(ApiKey);
 
             var result = await client.RequestCryptoDailyTimeSeriesAsync("BTC");
+
+            Assert.NotNull(result);
+
+            Assert.True(result.DataPoints.Count > 0);
+        }
+
+        [Fact]
+        public async Task RequestFxDailyTimeSeriesAsync_Test()
+        {
+            var client = new AlphaVantageStocksClient(ApiKey);
+
+            var result = await client.RequestFxDailyTimeSeriesAsync("USD", "RUB");
 
             Assert.NotNull(result);
 

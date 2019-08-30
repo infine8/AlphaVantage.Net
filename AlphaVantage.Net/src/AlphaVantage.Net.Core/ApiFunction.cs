@@ -17,7 +17,7 @@ namespace AlphaVantage.Net.Core
         BATCH_STOCK_QUOTES,
 
         // Foreign Exchange (FX)
-        CURRENCY_EXCHANGE_RATE,
+        FX_DAILY,
         
         // Digital & Crypto Currencies
         DIGITAL_CURRENCY_INTRADAY,

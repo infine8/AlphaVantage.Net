@@ -7,5 +7,6 @@
         public const string InformationToken = "1. Information";
         public const string SymbolToken = "2. Symbol";
         public const string RefreshTimeToken = "3. Last Refreshed";
+        public const string TimezoneToken = "6. Time Zone";
     }
 }
