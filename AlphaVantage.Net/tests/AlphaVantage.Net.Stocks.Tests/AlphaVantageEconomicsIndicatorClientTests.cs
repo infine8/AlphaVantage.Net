@@ -22,7 +22,7 @@ namespace AlphaVantage.Net.Stocks.Tests
         {
             var client = new AlphaVantageEconomicsIndicatorClient(ApiKey);
 
-            var result = await client.RequestTreasureYieldDailyTimeSeriesAsync(TreasureYieldMaturity.Month3);
+            var result = await client.RequestTreasureYieldDailyTimeSeriesAsync(TreasureYieldMaturity.US3M);
 
             Assert.NotNull(result);
             Assert.True(result.Count > 0);

@@ -4,11 +4,11 @@ namespace AlphaVantage.Net.Stocks.Utils
 {
     public enum TreasureYieldMaturity
     {
-        [Description("30year")] Year30,
-        [Description("10year")] Year10,
-        [Description("7year")] Year7,
-        [Description("5year")] Year5,
-        [Description("2year")] Year2,
-        [Description("3month")] Month3,
+        [Description("30year")] US30Y,
+        [Description("10year")] US10Y,
+        [Description("7year")] US7Y,
+        [Description("5year")] US5Y,
+        [Description("2year")] US2Y,
+        [Description("3month")] US3M,
     }
 }
