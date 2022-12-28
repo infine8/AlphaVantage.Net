@@ -9,7 +9,7 @@ namespace AlphaVantage.Net.Stocks.Tests
 {
     public class AlphaVantageStocksClientTests
     {
-        private const string Symbol = "AAPL";
+        private const string Symbol = "LFAC";
         private const string ApiKey = "MSFSF1JFG104HAPL";
 
         public AlphaVantageStocksClientTests()
@@ -187,5 +187,6 @@ namespace AlphaVantage.Net.Stocks.Tests
 
             Assert.True(result.DataPoints.Count > 0);
         }
+
     }
 }

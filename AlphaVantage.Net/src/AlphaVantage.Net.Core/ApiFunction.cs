@@ -24,7 +24,9 @@ namespace AlphaVantage.Net.Core
         DIGITAL_CURRENCY_DAILY,
         DIGITAL_CURRENCY_WEEKLY,
         DIGITAL_CURRENCY_MONTHLY,
-        
+
+        TREASURY_YIELD,
+
         // Stock Technical Indicators
         SMA,
         EMA,
