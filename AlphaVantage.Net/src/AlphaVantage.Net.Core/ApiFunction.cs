@@ -25,7 +25,18 @@ namespace AlphaVantage.Net.Core
         DIGITAL_CURRENCY_WEEKLY,
         DIGITAL_CURRENCY_MONTHLY,
 
+        // Economics Indicators
+        REAL_GDP,
+        REAL_GDP_PER_CAPITA,
         TREASURY_YIELD,
+        FEDERAL_FUNDS_RATE,
+        CPI,
+        INFLATION,
+        RETAIL_SALES,
+        DURABLES,
+        UNEMPLOYMENT,
+        NONFARM_PAYROLL,
+
 
         // Stock Technical Indicators
         SMA,
