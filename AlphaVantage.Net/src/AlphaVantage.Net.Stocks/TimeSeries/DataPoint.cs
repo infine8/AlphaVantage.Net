@@ -12,6 +12,8 @@ namespace AlphaVantage.Net.Stocks.TimeSeries
         public decimal OpeningPrice { get; set; }
 
         public decimal ClosingPrice { get; set; }
+        public decimal AdjustedClosingPrice { get; set; }
+        public decimal SplitCoefficient { get; set; }
 
         public decimal HighestPrice { get; set; }
 

@@ -1,13 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Net.Http;
-using System.Text;
 using System.Threading.Tasks;
+using System.Web;
 using AlphaVantage.Net.Core.Exceptions;
 using AlphaVantage.Net.Core.InternalHttpClient;
 using AlphaVantage.Net.Core.Validation;
 using JetBrains.Annotations;
-using Microsoft.AspNetCore.WebUtilities;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 
@@ -33,29 +32,36 @@ namespace AlphaVantage.Net.Core
         {
             AssertValid(function, query);
 
-            using (var client = new HttpClientWithRateLimit(new HttpClient(), 20, 10))
-            {
-                if (_timeout.HasValue) client.SetTimeOut(_timeout.Value);
+            using var client = new HttpClientWithRateLimit(new HttpClient(), 20, 10);
 
-                var request = ComposeHttpRequest(apiKey, function, query);
-                var response = await client.SendAsync(request);
+            if (_timeout.HasValue) client.SetTimeOut(_timeout.Value);
 
-                var jsonString = await response.Content.ReadAsStringAsync();
-                var jObject = (JObject)JsonConvert.DeserializeObject(jsonString);
+            var request = ComposeHttpRequest(apiKey, function, query);
+            var response = await client.SendAsync(request);
 
-                AssertNotBadRequest(jObject);
+            var jsonString = await response.Content.ReadAsStringAsync();
+            var jObject = (JObject)JsonConvert.DeserializeObject(jsonString);
 
-                return jObject;
-            }
+            AssertNotBadRequest(jObject);
+
+            return jObject;
         }
 
         private HttpRequestMessage ComposeHttpRequest(string apiKey, ApiFunction function, IDictionary<string, string> query)
         {
-            var fullQueryDict = new Dictionary<string, string>(query);
-            fullQueryDict.Add(ApiConstants.ApiKeyQueryVar, apiKey);
-            fullQueryDict.Add(ApiConstants.FunctionQueryVar, function.ToString());
-            
-            var urlWithQueryString = QueryHelpers.AddQueryString(ApiConstants.AlfaVantageUrl, fullQueryDict);
+            var fullQueryDict = new Dictionary<string, string>(query)
+            {
+                { ApiConstants.ApiKeyQueryVar, apiKey },
+                { ApiConstants.FunctionQueryVar, function.ToString() }
+            };
+
+            var paramString = HttpUtility.ParseQueryString(string.Empty);
+            foreach (var kvp in fullQueryDict)
+            {
+                paramString[kvp.Key] = kvp.Value;
+            }
+
+            var urlWithQueryString = $"{ApiConstants.AlfaVantageUrl}?{paramString}";
             var urlWithQuery = new Uri(urlWithQueryString);
 
             var request = new HttpRequestMessage
@@ -72,11 +78,11 @@ namespace AlphaVantage.Net.Core
             if(_apiCallValidator == null) return;
 
             var validationResult = _apiCallValidator.Validate(function, query);
-            
+
             if(!validationResult.IsValid)
                 throw new AlphaVantageException(validationResult.ErrorMsg);
         }
-        
+
         private void AssertNotBadRequest(JObject jObject)
         {
             if(jObject.ContainsKey(ApiConstants.BadRequestToken))

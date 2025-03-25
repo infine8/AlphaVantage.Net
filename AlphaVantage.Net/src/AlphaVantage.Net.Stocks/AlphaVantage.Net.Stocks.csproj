@@ -1,6 +1,6 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
-    <TargetFramework>netstandard2.0</TargetFramework>
+    <TargetFramework>net8.0</TargetFramework>
     <PackageId>AlphaVantage.Net.Stocks</PackageId>
     <Description>Client for retrieving stock time series data from Alpha Vantage API based on AlphaVantage.Net.Core</Description>
     <Version>1.0.3</Version>

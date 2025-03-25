@@ -15,7 +15,7 @@ namespace AlphaVantage.Net.Stocks.Parsing
     internal partial class DataParser
     {
         private const string TimeStampKey = "timestamp";
-        
+
         public TimeSeriesData ParseStockTimeSeries(JObject jObject)
         {
             if(jObject == null) throw new ArgumentNullException(nameof(jObject));
@@ -48,7 +48,7 @@ namespace AlphaVantage.Net.Stocks.Parsing
             }
         }
 
-        private void EnrichWithStockMetadata([NotNull] JProperty metadataJson, [NotNull] TimeSeriesData timeSeriesData)
+        private void EnrichWithStockMetadata(JProperty metadataJson, TimeSeriesData timeSeriesData)
         {
             var metadatas = metadataJson.Children().Single();
 
@@ -57,7 +57,7 @@ namespace AlphaVantage.Net.Stocks.Parsing
                 var metadataProperty = (JProperty) metadataItem;
                 var metadataItemName = metadataProperty.Name;
                 var metadataItemValue = metadataProperty.Value.ToString();
-                
+
                 if (metadataItemName.Contains(StockMetaDataJsonToken.InformationToken))
                 {
                     timeSeriesData.Type = GetTimeSeriesType(metadataItemValue);
@@ -89,21 +89,21 @@ namespace AlphaVantage.Net.Stocks.Parsing
                 return TimeSeriesType.Weekly;
             if (metadataValue.Contains(StockTimeSeriesJsonToken.MonthlyTimeSeriesTypeToken))
                 return TimeSeriesType.Monthly;
-            
+
             throw new TimeSeriesParsingException("Unable to determine time-series type");
         }
-        
+
         private bool IsAdjusted(string metadataValue)
         {
-            return 
+            return
                 metadataValue.Equals(StockTimeSeriesJsonToken.AdjustedToken_1) ||
                 metadataValue.Contains(StockTimeSeriesJsonToken.AdjustedToken_2);
         }
-        
-        private ICollection<DataPoint> GetStockDataPoints([NotNull] JProperty timeSeriesJson)
+
+        private ICollection<DataPoint> GetStockDataPoints(JProperty timeSeriesJson)
         {
             var result = new List<DataPoint>();
-            
+
             var timeseriesContent = timeSeriesJson.Children().Single();
             var contentDict = new Dictionary<string, string>();
             foreach (var dataPointJson in timeseriesContent)
@@ -111,9 +111,9 @@ namespace AlphaVantage.Net.Stocks.Parsing
                 var dataPointJsonProperty = dataPointJson as JProperty;
                 if(dataPointJsonProperty == null)
                     throw new TimeSeriesParsingException("Unable to parse time-series");
-                
+
                 contentDict.Add(TimeStampKey, dataPointJsonProperty.Name);
-                
+
                 var dataPointContent = dataPointJsonProperty.Single();
                 foreach (var field in dataPointContent)
                 {
@@ -122,7 +122,7 @@ namespace AlphaVantage.Net.Stocks.Parsing
                 }
 
                 var dataPoint = ComposeStockDataPoint(contentDict);
-                
+
                 result.Add(dataPoint);
                 contentDict.Clear();
             }
@@ -149,7 +149,7 @@ namespace AlphaVantage.Net.Stocks.Parsing
                 adjustedPoint.Volume = dataPointContent[StockTimeSeriesJsonToken.VolumeAdjustedToken].ParseDecimal();
                 adjustedPoint.AdjustedClosingPrice = dataPointContent[StockTimeSeriesJsonToken.AdjustedClosingPriceToken].ParseDecimal();
                 adjustedPoint.DividendAmount = dataPointContent[StockTimeSeriesJsonToken.DividendAmountToken].ParseDecimal();
-                
+
                 if(dataPointContent.ContainsKey(StockTimeSeriesJsonToken.SplitCoefficientToken))
                     adjustedPoint.SplitCoefficient = dataPointContent[StockTimeSeriesJsonToken.SplitCoefficientToken].ParseDecimal();
             }
@@ -157,7 +157,7 @@ namespace AlphaVantage.Net.Stocks.Parsing
             {
                 dataPoint.Volume = dataPointContent[StockTimeSeriesJsonToken.VolumeNonAdjustedToken].ParseDecimal();
             }
-            
+
             return dataPoint;
         }
     }
