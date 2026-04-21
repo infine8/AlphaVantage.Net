@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Net.Http;
 using System.Threading.Tasks;
 using AlphaVantage.Net.Core;
 using AlphaVantage.Net.Stocks.BatchQuotes;
@@ -23,9 +24,19 @@ namespace AlphaVantage.Net.Stocks
         public AlphaVantageStocksClient(string apiKey, TimeSpan? requestTimeout = null)
         {
             if(string.IsNullOrWhiteSpace(apiKey)) throw new ArgumentNullException(nameof(apiKey));
-            
+
             _apiKey = apiKey;
             _coreClient = new AlphaVantageCoreClient(timeout: requestTimeout);
+            _parser = new DataParser();
+        }
+
+        public AlphaVantageStocksClient(string apiKey, HttpClient httpClient)
+        {
+            if (string.IsNullOrWhiteSpace(apiKey)) throw new ArgumentNullException(nameof(apiKey));
+            if (httpClient == null) throw new ArgumentNullException(nameof(httpClient));
+
+            _apiKey = apiKey;
+            _coreClient = new AlphaVantageCoreClient(httpClient);
             _parser = new DataParser();
         }
 

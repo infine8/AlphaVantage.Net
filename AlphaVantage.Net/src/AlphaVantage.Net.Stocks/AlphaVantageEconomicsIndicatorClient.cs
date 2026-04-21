@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Net.Http;
 using System.Text;
 using System.Threading.Tasks;
 using AlphaVantage.Net.Core;
@@ -15,12 +16,13 @@ namespace AlphaVantage.Net.Stocks
         private readonly AlphaVantageCoreClient _coreClient;
         private readonly DataParser _parser;
 
-        public AlphaVantageEconomicsIndicatorClient(string apiKey, TimeSpan? requestTimeout = null)
+        public AlphaVantageEconomicsIndicatorClient(string apiKey, HttpClient httpClient)
         {
             if (string.IsNullOrWhiteSpace(apiKey)) throw new ArgumentNullException(nameof(apiKey));
+            if (httpClient == null) throw new ArgumentNullException(nameof(httpClient));
 
             _apiKey = apiKey;
-            _coreClient = new AlphaVantageCoreClient(timeout: requestTimeout);
+            _coreClient = new AlphaVantageCoreClient(httpClient);
             _parser = new DataParser();
         }
 

@@ -20,6 +20,9 @@ namespace AlphaVantage.Net.Core
         [CanBeNull]
         private readonly TimeSpan? _timeout;
 
+        [CanBeNull]
+        private readonly HttpClient _httpClient;
+
 
         public AlphaVantageCoreClient(IApiCallValidator apiCallValidator = null, TimeSpan? timeout = null)
         {
@@ -28,16 +31,29 @@ namespace AlphaVantage.Net.Core
             _timeout = timeout;
         }
 
+        public AlphaVantageCoreClient(HttpClient httpClient, IApiCallValidator apiCallValidator = null)
+        {
+            _httpClient = httpClient ?? throw new ArgumentNullException(nameof(httpClient));
+            _apiCallValidator = apiCallValidator;
+        }
+
         public virtual async Task<JObject> RequestApiAsync(string apiKey, ApiFunction function, IDictionary<string, string> query = null)
         {
             AssertValid(function, query);
 
-            using var client = new HttpClientWithRateLimit(new HttpClient(), 20, 10);
-
-            if (_timeout.HasValue) client.SetTimeOut(_timeout.Value);
-
             var request = ComposeHttpRequest(apiKey, function, query);
-            var response = await client.SendAsync(request);
+
+            HttpResponseMessage response;
+            if (_httpClient != null)
+            {
+                response = await _httpClient.SendAsync(request);
+            }
+            else
+            {
+                using var client = new HttpClientWithRateLimit(new HttpClient(), 20, 10);
+                if (_timeout.HasValue) client.SetTimeOut(_timeout.Value);
+                response = await client.SendAsync(request);
+            }
 
             var jsonString = await response.Content.ReadAsStringAsync();
             var jObject = (JObject)JsonConvert.DeserializeObject(jsonString);
