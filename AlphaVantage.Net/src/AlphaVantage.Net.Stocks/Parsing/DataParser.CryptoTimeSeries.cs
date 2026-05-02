@@ -119,7 +119,8 @@ namespace AlphaVantage.Net.Stocks.Parsing
             dataPoint.ClosingPrice = dataPointContent[CryptoTimeSeriesJsonToken.ClosingPriceToken].ParseDecimal();
 
             dataPoint.Volume = dataPointContent[CryptoTimeSeriesJsonToken.VolumeToken].ParseDecimal();
-            dataPoint.MarketCapUsd = dataPointContent[CryptoTimeSeriesJsonToken.MarketCapUsdToken].ParseDecimal();
+            if (dataPointContent.TryGetValue(CryptoTimeSeriesJsonToken.MarketCapUsdToken, out var marketCapStr))
+                dataPoint.MarketCapUsd = marketCapStr.ParseDecimal();
 
             return dataPoint;
         }
