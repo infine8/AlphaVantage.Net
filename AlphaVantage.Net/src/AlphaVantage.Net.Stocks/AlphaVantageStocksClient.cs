@@ -4,11 +4,14 @@ using System.Net.Http;
 using System.Threading.Tasks;
 using AlphaVantage.Net.Core;
 using AlphaVantage.Net.Stocks.BatchQuotes;
+using AlphaVantage.Net.Stocks.Fundamentals;
+using AlphaVantage.Net.Stocks.News;
 using AlphaVantage.Net.Stocks.Parsing;
 using AlphaVantage.Net.Stocks.SearchSymbol;
 using AlphaVantage.Net.Stocks.TimeSeries;
 using AlphaVantage.Net.Stocks.Utils;
 using AlphaVantage.Net.Stocks.Validation;
+using Newtonsoft.Json;
 
 namespace AlphaVantage.Net.Stocks
 {
@@ -162,5 +165,41 @@ namespace AlphaVantage.Net.Stocks
             return timeSeries;
         }
 
+        /// <summary>
+        /// Requests the NEWS_SENTIMENT endpoint for one or more tickers and returns the
+        /// raw response (feed entries plus throttle / information markers).
+        /// Caller is responsible for inspecting <see cref="NewsSentimentResponse.Note"/>
+        /// and <see cref="NewsSentimentResponse.Information"/>.
+        /// </summary>
+        public async Task<NewsSentimentResponse> RequestNewsSentimentAsync(
+            string[] tickers, int limit = 50)
+        {
+            if (tickers == null || tickers.Length == 0) throw new ArgumentException("At least one ticker required", nameof(tickers));
+
+            var query = new Dictionary<string, string>
+            {
+                { "tickers", string.Join(",", tickers) },
+                { "limit", limit.ToString() }
+            };
+
+            var jObject = await _coreClient.RequestApiAsync(_apiKey, ApiFunction.NEWS_SENTIMENT, query);
+            return jObject?.ToObject<NewsSentimentResponse>();
+        }
+
+        /// <summary>
+        /// Requests the OVERVIEW endpoint for the given symbol — company fundamentals.
+        /// Returns null when the API responds with an empty payload (unknown symbol).
+        /// </summary>
+        public async Task<CompanyOverview> RequestCompanyOverviewAsync(string symbol)
+        {
+            symbol = symbol?.Trim().ToUpper();
+            if (string.IsNullOrEmpty(symbol)) throw new ArgumentNullException(nameof(symbol));
+
+            var query = new Dictionary<string, string> { { "symbol", symbol } };
+            var jObject = await _coreClient.RequestApiAsync(_apiKey, ApiFunction.OVERVIEW, query);
+            if (jObject == null || jObject.Count == 0) return null;
+
+            return jObject.ToObject<CompanyOverview>();
+        }
     }
 }

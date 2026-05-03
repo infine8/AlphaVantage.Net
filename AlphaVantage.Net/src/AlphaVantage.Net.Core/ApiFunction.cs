@@ -95,6 +95,12 @@ namespace AlphaVantage.Net.Core
         // Sector Performances
         SECTOR,
 
-        SYMBOL_SEARCH
+        SYMBOL_SEARCH,
+
+        // News & Sentiment
+        NEWS_SENTIMENT,
+
+        // Fundamentals
+        OVERVIEW
     }
 }
