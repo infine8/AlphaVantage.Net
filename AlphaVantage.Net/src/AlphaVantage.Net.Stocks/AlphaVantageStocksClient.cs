@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using AlphaVantage.Net.Core;
 using AlphaVantage.Net.Stocks.BatchQuotes;
 using AlphaVantage.Net.Stocks.Fundamentals;
+using AlphaVantage.Net.Stocks.Listings;
 using AlphaVantage.Net.Stocks.News;
 using AlphaVantage.Net.Stocks.Parsing;
 using AlphaVantage.Net.Stocks.SearchSymbol;
@@ -200,6 +201,32 @@ namespace AlphaVantage.Net.Stocks
             if (jObject == null || jObject.Count == 0) return null;
 
             return jObject.ToObject<CompanyOverview>();
+        }
+
+        /// <summary>
+        /// Requests the LISTING_STATUS endpoint — full US catalog of active or delisted
+        /// stocks / ETFs. Response is CSV (not JSON), so this bypasses the JSON parser
+        /// and goes through <see cref="AlphaVantageCoreClient.RequestApiRawAsync"/>.
+        /// Historical snapshots (via <paramref name="date"/>) are supported from 2010-01-01.
+        /// </summary>
+        public async Task<ICollection<ListingStatusEntry>> RequestListingStatusAsync(
+            ListingStateFilter state = ListingStateFilter.Active,
+            DateTime? date = null)
+        {
+            var earliest = new DateTime(2010, 1, 1);
+            if (date.HasValue && date.Value.Date < earliest)
+                throw new ArgumentOutOfRangeException(nameof(date),
+                    "AlphaVantage LISTING_STATUS supports date snapshots from 2010-01-01 onward.");
+
+            var query = new Dictionary<string, string>
+            {
+                { "state", state.ToString().ToLowerInvariant() }
+            };
+            if (date.HasValue)
+                query.Add("date", date.Value.ToString("yyyy-MM-dd"));
+
+            var csv = await _coreClient.RequestApiRawAsync(_apiKey, ApiFunction.LISTING_STATUS, query);
+            return new ListingStatusCsvParser().Parse(csv);
         }
     }
 }

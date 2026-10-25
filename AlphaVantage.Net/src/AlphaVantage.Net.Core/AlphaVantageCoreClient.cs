@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Net.Http;
 using System.Threading.Tasks;
@@ -39,6 +39,27 @@ namespace AlphaVantage.Net.Core
 
         public virtual async Task<JObject> RequestApiAsync(string apiKey, ApiFunction function, IDictionary<string, string> query = null)
         {
+            var responseBody = await SendRequestAsync(apiKey, function, query);
+
+            var jObject = (JObject)JsonConvert.DeserializeObject(responseBody);
+
+            AssertNotBadRequest(jObject);
+
+            return jObject;
+        }
+
+        /// <summary>
+        /// Sends the same underlying HTTP request as <see cref="RequestApiAsync"/> but returns
+        /// the raw response body as a string. Use for endpoints that return non-JSON payloads
+        /// (e.g. LISTING_STATUS returns CSV).
+        /// </summary>
+        public virtual async Task<string> RequestApiRawAsync(string apiKey, ApiFunction function, IDictionary<string, string> query = null)
+        {
+            return await SendRequestAsync(apiKey, function, query);
+        }
+
+        private async Task<string> SendRequestAsync(string apiKey, ApiFunction function, IDictionary<string, string> query)
+        {
             AssertValid(function, query);
 
             var request = ComposeHttpRequest(apiKey, function, query);
@@ -55,17 +76,12 @@ namespace AlphaVantage.Net.Core
                 response = await client.SendAsync(request);
             }
 
-            var jsonString = await response.Content.ReadAsStringAsync();
-            var jObject = (JObject)JsonConvert.DeserializeObject(jsonString);
-
-            AssertNotBadRequest(jObject);
-
-            return jObject;
+            return await response.Content.ReadAsStringAsync();
         }
 
         private HttpRequestMessage ComposeHttpRequest(string apiKey, ApiFunction function, IDictionary<string, string> query)
         {
-            var fullQueryDict = new Dictionary<string, string>(query)
+            var fullQueryDict = new Dictionary<string, string>(query ?? new Dictionary<string, string>())
             {
                 { ApiConstants.ApiKeyQueryVar, apiKey },
                 { ApiConstants.FunctionQueryVar, function.ToString() }

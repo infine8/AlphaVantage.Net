@@ -51,5 +51,9 @@
     <EmbeddedResource Include="Data\stock-quotes.json">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </EmbeddedResource>
+    <None Remove="Data\listing-status.csv" />
+    <EmbeddedResource Include="Data\listing-status.csv">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </EmbeddedResource>
   </ItemGroup>
 </Project>

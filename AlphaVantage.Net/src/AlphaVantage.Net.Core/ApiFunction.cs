@@ -101,6 +101,9 @@ namespace AlphaVantage.Net.Core
         NEWS_SENTIMENT,
 
         // Fundamentals
-        OVERVIEW
+        OVERVIEW,
+
+        // Reference data (CSV response)
+        LISTING_STATUS
     }
 }

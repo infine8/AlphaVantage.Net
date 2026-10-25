@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Net.Http;
 using System.Threading;
 using System.Threading.Tasks;
 using AlphaVantage.Net.Stocks.Utils;
@@ -20,7 +21,7 @@ namespace AlphaVantage.Net.Stocks.Tests
         [Fact]
         public async Task RequestTreasureYieldDailyTimeSeriesAsync_Test()
         {
-            var client = new AlphaVantageEconomicsIndicatorClient(ApiKey);
+            var client = new AlphaVantageEconomicsIndicatorClient(ApiKey, new HttpClient());
 
             var result = await client.RequestTreasureYieldDailyTimeSeriesAsync(TreasureYieldMaturity.US3M);
 
@@ -31,7 +32,7 @@ namespace AlphaVantage.Net.Stocks.Tests
         [Fact]
         public async Task RequestInterestRateTimeSeriesAsync_Test()
         {
-            var client = new AlphaVantageEconomicsIndicatorClient(ApiKey);
+            var client = new AlphaVantageEconomicsIndicatorClient(ApiKey, new HttpClient());
 
             var result = await client.RequestInterestRateTimeSeriesAsync();
 

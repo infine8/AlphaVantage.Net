@@ -1,0 +1,6 @@
+symbol,name,exchange,assetType,ipoDate,delistingDate,status
+A,Agilent Technologies Inc,NYSE,Stock,1999-11-18,null,Active
+AAAU,Goldman Sachs Physical Gold ETF,BATS,ETF,2018-08-15,null,Active
+AACG,ATA Creativity Global,NASDAQ,Stock,2008-01-29,null,Active
+AADR,ADVISORSHARES DORSEY WRIGHT ADR ETF ,NASDAQ,ETF,2010-07-21,null,Active
+LEHMQ,Lehman Brothers Holdings Inc,NYSE,Stock,1994-05-31,2008-09-15,Delisted
